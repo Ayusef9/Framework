@@ -1,59 +1,64 @@
-import { Injectable } from '@nestjs/common';
+
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { Book } from './entities/book-entity.js';
-import { title } from 'process';
 import { CreateBookDto } from './dto/create-book.dto.js';
 
 @Injectable()
 export class BooksService {
+  constructor(
+    @InjectRepository(Book)
+    private readonly bookRepository: Repository<Book>,
+  ) {}
 
-    private books: Book[] = [
-    {
+  // Menampilkan semua buku
+  async findAll(): Promise<Book[]> {
+    return this.bookRepository.find();
+  }
 
-        id: 1,
-        title: 'The Great Gatsby',
-        author: 'F. Scott Fitzgerald',
-        isbn: '9780743273565',
-        publishedYear: 1925,
-        isAvailable: true,
-    }
-]
+  // Menambahkan buku baru
+  async create(book: CreateBookDto): Promise<Book> {
+    const newBook = this.bookRepository.create({
+      title: book.title,
+      author: book.author,
+      isbn: book.isbn,
+      publishedYear: book.publishedYear,
+      isAvailable: true,
+    });
 
-    findAll(): Book[] {
-        return this.books;
-    }
+    return this.bookRepository.save(newBook);
+  }
 
-    create(book: CreateBookDto): Book {
-        const newBook: Book = {
-            id: this.books.length + 1,
-            title: book.title,
-            author: book.author,
-            isbn: book.isbn,
-            publishedYear: book.publishedYear,
-            isAvailable: true
-        };
-        this.books.push(newBook);
-        return newBook;
-    }
+  // Mencari buku berdasarkan ID
+  async findOne(id: number): Promise<Book> {
+    const book = await this.bookRepository.findOneBy({ id: String(id) });
 
-    findOne(id: number): Book | undefined {
-        return this.books.find(book => book.id === id);
+    if (!book) {
+      throw new NotFoundException(`Buku dengan ID ${id} tidak ditemukan`);
     }
 
-    update(id: number, updatedBook: Partial<Book>): Book | undefined {
-        const bookIndex = this.books.findIndex(book => book.id === id);
-        if (bookIndex === -1) {
-            return undefined;
-        }
-        this.books[bookIndex] = { ...this.books[bookIndex], ...updatedBook };
-        return this.books[bookIndex];
-    }
+    return book;
+  }
 
-    delete(id: number): boolean {
-        const bookIndex = this.books.findIndex(book => book.id === id);
-        if (bookIndex === -1) {
-            return false;
-        }
-        this.books.splice(bookIndex, 1);
-        return true;
-    }
+  // Mengubah data buku
+  async update(
+    id: number,
+    updatedBook: Partial<CreateBookDto>,
+  ): Promise<Book> {
+    const book = await this.findOne(id);
+
+    Object.assign(book, updatedBook);
+
+    return this.bookRepository.save(book);
+  }
+
+  // Menghapus buku
+  async delete(id: number): Promise<{ message: string }> {
+    const book = await this.findOne(id);
+
+    await this.bookRepository.remove(book);
+
+    return { message: `Buku dengan ID ${id} berhasil dihapus` };
+  }
 }
