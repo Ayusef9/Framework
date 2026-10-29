@@ -31,7 +31,7 @@ export class BooksService {
   }
 
   // Mencari buku berdasarkan ID
-  async findOne(id: number): Promise<Book> {
+  async findById(id: string): Promise<Book> {
     const book = await this.bookRepository.findOneBy({ id: String(id) });
 
     if (!book) {
@@ -43,10 +43,10 @@ export class BooksService {
 
   // Mengubah data buku
   async update(
-    id: number,
-    updatedBook: Partial<CreateBookDto>,
+    id: string,
+    updatedBook: CreateBookDto,
   ): Promise<Book> {
-    const book = await this.findOne(id);
+    const book = await this.findById(id);
 
     Object.assign(book, updatedBook);
 
@@ -54,8 +54,8 @@ export class BooksService {
   }
 
   // Menghapus buku
-  async delete(id: number): Promise<{ message: string }> {
-    const book = await this.findOne(id);
+  async remove(id: string): Promise<{ message: string }> {
+    const book = await this.findById(id);
 
     await this.bookRepository.remove(book);
 
