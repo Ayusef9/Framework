@@ -1,4 +1,6 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Author } from "../../author/entities/author-entity.js";
+import { JoinColumn } from "typeorm/browser";
 
 @Entity({name: 'books'})
 export class Book{
@@ -9,7 +11,7 @@ export class Book{
     title: string;
 
     @Column({type: 'varchar', length: 50})
-    author: string;
+    authorName: string;
 
     @Column({type: 'varchar', length: 50})
     isbn: string;
@@ -19,6 +21,16 @@ export class Book{
 
     @Column({type:'boolean', default: true})
     isAvailable: boolean;
+
+    @Column({ type: 'decimal', precision: 12, scale: 2, default: 0})
+    price: number;
+
+    @Column({ type: 'int', default: 0 })
+    stock: number;
+
+    @OneToOne(() => Author, { cascade: true })
+    @JoinColumn({name:'author_id'})
+    author: Author;
 
     @CreateDateColumn({name: 'created_at'})
     createdAt: Date;
