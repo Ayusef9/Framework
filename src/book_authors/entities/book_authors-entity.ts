@@ -1,14 +1,9 @@
-import {
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryColumn,
-} from 'typeorm';
+import {Entity, JoinColumn, ManyToOne, PrimaryColumn} from 'typeorm';
 import type { Relation } from 'typeorm';
 import { Author } from '../../author/entities/author-entity.js';
 import { Book } from '../../books/entities/book-entity.js';
 
-// Tabel penghubung many-to-many dengan composite primary key (book_id, author_id)
+
 @Entity({ name: 'book_authors' })
 export class BookAuthor {
   @PrimaryColumn({ name: 'book_id', type: 'uuid' })

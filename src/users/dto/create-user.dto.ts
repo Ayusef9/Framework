@@ -19,8 +19,9 @@ export class CreateUserDto {
     readonly email: string;
 
     @IsNotEmpty({ message: "Nomor telepon tidak boleh kosong" })
-    @IsInt({ message: "Nomor telepon harus berupa angka" })
-    readonly phone: number;
+    @IsString({ message: "Nomor telepon harus berupa teks" })
+    @MaxLength(20, { message: "Nomor telepon maksimal 20 karakter" })
+    readonly phone: string;
 
     @IsNotEmpty({ message: "Password tidak boleh kosong" })
     @IsString({ message: "Password harus berupa teks" })
