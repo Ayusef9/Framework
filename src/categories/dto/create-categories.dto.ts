@@ -5,5 +5,3 @@ export class CreateCategoryDto {
     @MaxLength(100, { message: "Nama kategori maksimal 100 karakter" })
     readonly name: string;
 }
-
-

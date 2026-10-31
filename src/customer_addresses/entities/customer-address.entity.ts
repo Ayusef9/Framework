@@ -1,4 +1,6 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn} from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn} from 'typeorm';
+import { Users } from '../../users/entities/user.entity.js';
+import type { Relation } from "typeorm";
 
 
 @Entity({ name: 'customer_addresses' })
@@ -21,6 +23,11 @@ export class CustomerAddress {
   @Column({ type: 'varchar', length: 100 })
   city: string;
 
+  // customer_addresses (N) -> (1) users (pelanggan)
+  @ManyToOne(() => Users, (user) => user.addresses, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'customer_id' })
+  customer: Relation<Users>;
+
   @Column({ name: 'postal_code', type: 'varchar', length: 10 })
   postalCode: string;
 
@@ -30,5 +37,4 @@ export class CustomerAddress {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
-  
 }

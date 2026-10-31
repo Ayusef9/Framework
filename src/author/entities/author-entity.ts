@@ -1,5 +1,6 @@
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Book } from "../../books/entities/book-entity.js";
+import { BookAuthor } from "../../book_authors/entities/book_authors-entity.js";
 
 @Entity({name:'author'})
 export class Author{
@@ -15,12 +16,8 @@ export class Author{
     @Column({type: 'varchar', length: 50})
         foto: string;
 
-    @OneToMany(() => Book, (item) => item.id, {
-        cascade:true
-    })
-    books: Book[];
-
-
+    @OneToMany(() => BookAuthor, (bookAuthor) => bookAuthor.author)
+    bookAuthors: BookAuthor[];
 
     @CreateDateColumn({name: 'created_at'})
             createdAt: Date;

@@ -1,5 +1,5 @@
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn,} from 'typeorm';
-
+import { Book } from '../../books/entities/book-entity.js';
 
 @Entity({ name: 'categories' })
 export class Category {
@@ -8,6 +8,9 @@ export class Category {
 
   @Column({ type: 'varchar', length: 100, unique: true })
   name: string;
+
+  @OneToMany(() => Book, (book) => book.category)
+  books: Book[];
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
