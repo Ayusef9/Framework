@@ -13,8 +13,8 @@ export class Users{
     @Column({type: 'varchar', length: 50})
         email: string;
     
-    @Column({type: 'int', length: 20})
-        phone: number;
+    @Column({type: 'varchar', length: 20})
+        phone: string;
 
     @Column({type: 'varchar'})
         password: string;
